@@ -1,0 +1,33 @@
+/* .ui.list > .item {
+  line-height: 1.5em !important;
+}
+ */
+.ui.horizontal.custom-list.list > .item {
+  margin-left: 1.5em;
+}
+
+.ui.horizontal.custom-list.list > .item .header.custom-hover {
+  color: hsla(0, 0%, 100%, 0.5) !important;
+}
+
+.ui.horizontal.custom-list.list > .item .header.custom-hover:hover {
+  color: hsla(0, 0%, 100%, 0.9) !important;
+}
+
+.full-text {
+  display: block;
+}
+
+i.icon.short-text {
+  display: none;
+  margin: 0;
+}
+
+@media (max-width: 450px) {
+  .full-text {
+    display: none;
+  }
+  i.icon.short-text {
+    display: block;
+  }
+}
