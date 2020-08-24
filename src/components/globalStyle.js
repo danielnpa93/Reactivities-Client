@@ -15,8 +15,6 @@ body{
     background-color:#f5f5f5;
     font-size:14px;
     font-family:Arial, Helvetica, sans-serif;
-   
-
 }
 
 #root{
@@ -25,9 +23,6 @@ body{
     grid-template-columns:2fr 1fr;
     grid-template-areas:"header header"
                         "dashboard details";
-
 }
-
-
 
 `;

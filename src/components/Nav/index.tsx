@@ -1,47 +1,18 @@
-import React from "react";
-import { Header, NavContainer } from "./style";
-import logo from "../../assets/logo.png";
-import { Button, List, Image, Icon } from "semantic-ui-react";
+import { Dispatch, bindActionCreators } from "redux";
+import { layout_toogle_activity_container } from "../../actions/layout";
+import { activity_select } from "../../actions/activity";
+import { connect, ConnectedProps } from "react-redux";
+import Nav from "./Nav";
 
-interface IProps {
-  onNewActivity(): void;
-}
-
-export default function NavBar({ onNewActivity }: IProps) {
-  return (
-    <Header>
-      <NavContainer>
-        <List className="custom-list" horizontal inverted>
-          <List.Item as="a">
-            <Image src={logo} size="mini" />
-
-            <List.Content style={{ verticalAlign: "0.01em" }}>
-              <List.Header>Reactivities</List.Header>
-            </List.Content>
-          </List.Item>
-          <List.Item>
-            <List.Content>
-              <List.Header as="a" className="custom-hover">
-                Activities
-              </List.Header>
-            </List.Content>
-          </List.Item>
-        </List>
-
-        <Button
-          style={{ marginLeft: "auto" }}
-          onClick={onNewActivity}
-          color="green"
-        >
-          <span className="full-text">Add New Activity</span>
-          <Icon
-            className="short-text"
-            name="plus"
-            style={{ margin: "0" }}
-            title="add new activity"
-          />
-        </Button>
-      </NavContainer>
-    </Header>
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return bindActionCreators(
+    { layout_toogle_activity_container, activity_select },
+    dispatch
   );
-}
+};
+
+const connector = connect(null, mapDispatchToProps);
+
+export type NavProps = ConnectedProps<typeof connector>;
+
+export default connector(Nav);

@@ -1,69 +1,30 @@
-import React from "react";
-import { IActivity } from "../../Models/typing";
-import {
-  List,
-  Grid,
-  Container,
-  Segment,
-  Divider,
-  Button,
-  Label,
-  Icon,
-} from "semantic-ui-react";
+import { ApplicationState } from "../../store";
+import { Dispatch, bindActionCreators } from "redux";
+import { activity_select, activity_remove } from "../../actions/activity";
+import { layout_toogle_activity_container } from "../../actions/layout";
+import { connect, ConnectedProps } from "react-redux";
+import Dashboard from "./Dashboard";
 
-import { dateStringFormat } from "../../Utils/dateStringFormat";
+const { activity_remove_async_request } = activity_remove;
 
-interface IProps {
-  activities: IActivity[];
-  isRemovingId: string | null;
-  onRemove(activity: IActivity): void;
-  onView(activity: IActivity): void;
-}
+const mapStateToProps = (state: ApplicationState) => ({
+  activities: state.activity.data,
+  removingId: state.activity.removingId,
+});
 
-export default function Dashboard({
-  activities,
-  isRemovingId,
-  onView,
-  onRemove,
-}: IProps) {
-  return (
-    <div style={{ gridArea: "dashboard", margin: "0" }}>
-      <Segment style={{ margin: "20px" }}>
-        <List>
-          {activities.map((ac) => (
-            <>
-              <List.Item>
-                <List.Header>{ac.title}</List.Header>
-                <List.Description>{dateStringFormat(ac.date)}</List.Description>
-                <List.Content style={{ margin: "10px 0px" }}>
-                  <List.Item>{ac.description}</List.Item>
-                  <List.Item> {ac.category}</List.Item>
-                  <List.Item> {ac.city}</List.Item>
-                </List.Content>
-
-                <List.Content floated="left">
-                  <Label basic>{ac.category}</Label>
-                </List.Content>
-                <List.Content floated="right">
-                  <Button
-                    basic
-                    color="red"
-                    loading={ac.id === isRemovingId}
-                    icon
-                    onClick={() => onRemove(ac)}
-                  >
-                    <Icon name="trash alternate outline" />
-                  </Button>
-                  <Button onClick={() => onView(ac)} primary>
-                    View
-                  </Button>
-                </List.Content>
-              </List.Item>
-              <Divider />
-            </>
-          ))}
-        </List>
-      </Segment>
-    </div>
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return bindActionCreators(
+    {
+      activity_select,
+      activity_remove_async_request,
+      layout_toogle_activity_container,
+    },
+    dispatch
   );
-}
+};
+
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+export type DashboardProps = ConnectedProps<typeof connector>;
+
+export default connector(Dashboard);

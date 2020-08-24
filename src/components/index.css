@@ -1,7 +1,3 @@
-/* .ui.list > .item {
-  line-height: 1.5em !important;
-}
- */
 .ui.horizontal.custom-list.list > .item {
   margin-left: 1.5em;
 }

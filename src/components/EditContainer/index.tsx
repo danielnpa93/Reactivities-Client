@@ -1,120 +1,44 @@
-import React from "react";
+import { connect, ConnectOptions, ConnectedProps } from "react-redux";
+import Edit from "./Edit";
+import { IActivity } from "../../Models/types";
+import { Dispatch, bindActionCreators } from "redux";
+import { ApplicationState } from "../../store";
 import {
-  Segment,
-  Input,
-  TextArea,
-  Form,
-  Button,
-  Select,
-  Dropdown,
-} from "semantic-ui-react";
-import { IActivity } from "../../Models/typing";
+  activity_create,
+  activity_update,
+  activity_select,
+} from "../../actions/activity";
+import { layout_toogle_activity_container } from "../../actions/layout";
 
-const options = [
-  { key: 1, value: "culture", text: "Culture" },
-  { key: 2, value: "drinks", text: "Drinks" },
-  { key: 3, value: "film", text: "Film" },
-  { key: 4, value: "food", text: "Food" },
-  { key: 5, value: "music", text: "Music" },
-  { key: 6, value: "travel", text: "Travel" },
-  { key: 7, value: "others", text: "Others" },
-];
+const { activity_update_async_request } = activity_update;
+const { activity_create_async_request } = activity_create;
 
-interface IProps {
-  activity?: IActivity;
-  isSubmitting: boolean;
-  onCancel(): void;
-  onSubmit(activity: IActivity): void;
-}
+type StateProps = ReturnType<typeof mapStateToProps>;
 
-interface IActivityNullable {
-  title?: string;
-  description?: string;
-  category?: string;
-  date?: string;
-  venue?: string;
-}
-
-export default function EdittContainer({
-  onCancel,
-  onSubmit,
-  isSubmitting,
-  activity,
-}: IProps) {
-  const [activityState, setActivity] = React.useState<
-    IActivityNullable | undefined
-  >(activity);
-
-  const handleChangeActivity = (
-    property: "date" | "venue" | "title" | "description" | "category",
-    value: any
-  ) => {
-    let newActivity = activityState ? { ...activityState } : {};
-
-    setActivity({ ...newActivity, [property]: value });
+const mapStateToProps = (state: ApplicationState) => {
+  return {
+    currentActivity: state.activity.data.find(
+      (x) => x.id === state.activity.currentActivityId
+    ),
+    isSubmmiting: state.activity.isSubmmiting,
   };
+};
 
-  const formatDate = (isoDate?: string) => {
-    return isoDate?.slice(0, 16);
+const mapDispatchToProps = (dispatch: Dispatch) => {
+  return {
+    ...bindActionCreators(
+      { activity_create_async_request, activity_update_async_request },
+      dispatch
+    ),
+    onCancel: () => {
+      dispatch(activity_select({}));
+      dispatch(layout_toogle_activity_container({ activityContainer: "none" }));
+    },
   };
+};
 
-  return (
-    <div style={{ gridArea: "details" }}>
-      <Segment style={{ margin: "20px" }} clearing>
-        <Input
-          fluid
-          placeholder="Title"
-          value={activityState?.title}
-          onChange={(e) => handleChangeActivity("title", e.target.value)}
-        />
-        <br />
-        <Form>
-          <TextArea
-            placeholder="Description"
-            value={activityState?.description}
-            onChange={(e) =>
-              handleChangeActivity("description", e.currentTarget.value)
-            }
-          />
-        </Form>
-        <br />
-        <Dropdown
-          fluid
-          placeholder="Category"
-          options={options}
-          selection
-          value={activityState?.category}
-          //  onChange={(e) => handleChangeActivity("title", e)}
-          onChange={(e, { value }) => handleChangeActivity("category", value)}
-        />
-        <br />
-        <Input
-          fluid
-          placeholder="Date"
-          type="datetime-local"
-          value={formatDate(activityState?.date)} //{"2020-08-19T18:14"} //{activityState?.date}
-          onChange={(e) => handleChangeActivity("date", e.target.value)}
-        />
-        <br />
-        <Input
-          fluid
-          placeholder="Venue"
-          value={activityState?.venue}
-          onChange={(e) => handleChangeActivity("venue", e.target.value)}
-        />
-        <br />
-        <Button
-          loading={isSubmitting}
-          primary
-          floated="right"
-          onClick={() => onSubmit(activityState as IActivity)}
-        >
-          Submit
-        </Button>
-        <Button floated="right" onClick={onCancel}>
-          Cancel
-        </Button>
-      </Segment>
-    </div>
-  );
-}
+const connector = connect(mapStateToProps, mapDispatchToProps);
+
+export type EditContainerProps = ConnectedProps<typeof connector>;
+
+export default connector(Edit);
